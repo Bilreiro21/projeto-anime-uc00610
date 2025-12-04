@@ -1,16 +1,27 @@
-# React + Vite
+# Projeto 1 - Aplicação de Animes com React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este projeto foi desenvolvido no âmbito da Unidade Curricular UC00610. Consiste numa aplicação web ("Single Page Application") que consome dados de uma API pública para apresentar informações sobre Animes.
 
-Currently, two official plugins are available:
+## 📋 Funcionalidades
+* **Listagem:** Apresentação dos "Top Animes" mais populares na página inicial.
+* **Pesquisa:** Barra de pesquisa funcional que permite encontrar animes por nome.
+* **Detalhes:** Página dedicada para cada anime com sinopse, imagem, pontuação, ano, episódios e géneros.
+* **Navegação:** Utilização de rotas para navegar entre a lista e os detalhes sem recarregar a página.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🌐 API Escolhida
+* **Nome:** Jikan API (Unofficial MyAnimeList API)
+* **Documentação:** https://jikan.moe/
+* **Justificação:** Escolhi esta API porque é pública, gratuita, não requer chaves de autenticação (API Keys) complexas e fornece dados ricos (imagens, descrições, classificações) ideais para demonstrar listagens e detalhes.
 
-## React Compiler
+## 🛠️ Tecnologias Utilizadas
+* **React + Vite:** Para construção da interface e gestão de estado.
+* **Bootstrap 5:** Para estilização responsiva e componentes visuais (Cards, Navbar, Grelhas).
+* **React Router Dom:** Para gestão da navegação entre páginas.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Como executar o projeto
+Para correr este projeto localmente, siga os passos abaixo:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. **Instalar dependências:**
+   Abra o terminal na pasta do projeto e execute:
+   ```bash
+   npm install
