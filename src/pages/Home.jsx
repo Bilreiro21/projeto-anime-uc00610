@@ -1,129 +1,156 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import toast from 'react-hot-toast' // <--- Biblioteca de notificações
 
 function Home() {
-  const [animes, setAnimes] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [erro, setErro] = useState(null)
-  
-  const [pesquisa, setPesquisa] = useState('') 
-  const [page, setPage] = useState(1)
-  const [lastPage, setLastPage] = useState(1)
-  const [ordem, setOrdem] = useState('popularity') 
+  const [topAnimesHero, setTopAnimesHero] = useState([])
+  const [seasonNow, setSeasonNow] = useState([])
 
-  const [favoritos, setFavoritos] = useState([])
-  const [userRatings, setUserRatings] = useState({})
+  // Imagem de substituição caso a API falhe (Um cinzento neutro com texto)
+  const PLACEHOLDER_IMG = "https://placehold.co/400x600/2c3e50/ffffff?text=Sem+Imagem";
 
-  // Carregar dados guardados ao iniciar
   useEffect(() => {
-    const salvos = JSON.parse(localStorage.getItem('meus-favoritos')) || [];
-    setFavoritos(salvos);
-    const notasSalvas = JSON.parse(localStorage.getItem('meus-ratings')) || {};
-    setUserRatings(notasSalvas);
+    const carregarDados = async () => {
+      try {
+        // 1. Carregar Top Animes
+        const resTop = await fetch('https://api.jikan.moe/v4/top/anime?limit=10');
+        if (resTop.ok) {
+          const data = await resTop.json();
+          setTopAnimesHero(data.data || []);
+        }
+
+        // Delay para não bloquear a API
+        await new Promise(r => setTimeout(r, 800));
+
+        // 2. Carregar Temporada Atual
+        const resSeason = await fetch('https://api.jikan.moe/v4/seasons/now?limit=6');
+        if (resSeason.ok) {
+          const data = await resSeason.json();
+          setSeasonNow(data.data || []);
+        }
+
+      } catch (error) {
+        console.error("Erro ao carregar Home:", error);
+      }
+    };
+
+    carregarDados();
   }, []);
 
-  // Lógica de Favoritos com Notificações (TOASTS)
-  const toggleFavorito = (anime) => {
-    let novaLista;
-    const existe = favoritos.find(fav => fav.mal_id === anime.mal_id);
-
-    if (existe) {
-      novaLista = favoritos.filter(fav => fav.mal_id !== anime.mal_id);
-      // Notificação de erro/remoção
-      toast.error(`Removido: ${anime.title}`, { style: { borderRadius: '10px', background: '#333', color: '#fff' }});
-    } else {
-      novaLista = [...favoritos, anime];
-      // Notificação de sucesso/adição
-      toast.success(`Adicionado: ${anime.title}`, { style: { borderRadius: '10px', background: '#333', color: '#fff' }, icon: '❤️' });
-    }
-
-    setFavoritos(novaLista);
-    localStorage.setItem('meus-favoritos', JSON.stringify(novaLista));
-  }
-
-  const isFavorito = (id) => favoritos.some(fav => fav.mal_id === id);
-  const getMyRating = (id) => userRatings[id] || 0;
-
-  // Busca à API
-  const carregarAnimes = () => {
-    setLoading(true); setErro(null);
-    let url = `https://api.jikan.moe/v4/anime?page=${page}&order_by=${ordem}&sort=desc`
-    if (pesquisa) url += `&q=${pesquisa}`
-    else if (ordem === 'popularity') url = `https://api.jikan.moe/v4/top/anime?page=${page}`
-
-    fetch(url)
-      .then(res => { if (!res.ok) throw new Error('Erro na API'); return res.json(); })
-      .then(data => { setAnimes(data.data); setLastPage(data.pagination.last_visible_page); setLoading(false); })
-      .catch(err => { console.error(err); setErro("Erro ao carregar animes."); setLoading(false); })
-  }
-
-  useEffect(() => { carregarAnimes() }, [page, ordem]) 
-
-  const handlePesquisa = (e) => { e.preventDefault(); setPage(1); carregarAnimes(); }
-  
-  // Limpar com Refresh para resetar tudo
-  const handleLimpar = () => { window.location.reload(); }
+  // Função para tratar erro de imagem (se a imagem quebrar, põe a de substituição)
+  const handleImageError = (e) => {
+    e.target.src = PLACEHOLDER_IMG;
+  };
 
   return (
-    <div className="container mt-4 mb-5">
-      <div className="row justify-content-center mb-4">
-        <div className="col-12 col-lg-10">
-          <form onSubmit={handlePesquisa} className="d-flex flex-column flex-md-row gap-2 p-3 bg-light rounded shadow-sm">
-            <input type="text" className="form-control" placeholder="Pesquisar anime..." value={pesquisa} onChange={(e) => setPesquisa(e.target.value)} />
-            <select className="form-select" style={{ maxWidth: '200px' }} value={ordem} onChange={(e) => { setOrdem(e.target.value); setPage(1); }}>
-              <option value="popularity">Mais Populares</option>
-              <option value="score">Melhor Nota</option>
-              <option value="start_date">Mais Recentes</option>
-              <option value="episodes">Mais Episódios</option>
-            </select>
-            <button type="submit" className="btn btn-primary">Ir</button>
-            <button type="button" className="btn btn-outline-secondary" onClick={handleLimpar}>Limpar</button>
-          </form>
-        </div>
-      </div>
-
-      <h1 className="text-center mb-4">{pesquisa ? `Resultados: "${pesquisa}"` : 'Lista de Animes'}</h1>
-      
-      {loading && <div className="text-center mt-5"><div className="spinner-border text-primary"></div></div>}
-      {erro && <div className="alert alert-danger text-center">{erro}</div>}
-
-      {!loading && !erro && (
-        <>
-          <div className="row">
-            {animes.map((anime) => {
-              const myRate = getMyRating(anime.mal_id);
-              return (
-                <div key={anime.mal_id} className="col-12 col-md-6 col-lg-4 mb-4">
-                  <div className="card h-100 shadow-sm hover-effect">
-                    <div style={{ position: 'relative' }}>
-                      <img src={anime.images.jpg.image_url} className="card-img-top" alt={anime.title} style={{ height: '300px', objectFit: 'cover' }} />
-                      <button className="btn btn-light rounded-circle shadow-sm" style={{ position: 'absolute', top: '10px', right: '10px', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }} onClick={() => toggleFavorito(anime)}>
-                        {isFavorito(anime.mal_id) ? '❤️' : '🤍'}
-                      </button>
-                    </div>
-                    <div className="card-body d-flex flex-column">
-                      <h5 className="card-title">{anime.title}</h5>
-                      <div className="mb-2">
-                          <span className="badge bg-warning text-dark me-1">★ {anime.score}</span>
-                          <span className="badge bg-secondary me-1">{anime.year || 'N/A'}</span>
-                          {myRate > 0 && <span className="badge bg-success border border-light">Minha: {myRate} ★</span>}
-                      </div>
-                      <Link to={`/detalhes/${anime.mal_id}`} className="btn btn-primary mt-auto">Ver Detalhes</Link>
-                    </div>
+    <div>
+      {/* HERO SECTION ANIMADA */}
+      <div className="hero-animated">
+        <div className="container text-center">
+          <h1 className="hero-title display-4 mb-3">O Teu Portal de Anime</h1>
+          <p className="lead mb-5 opacity-75">
+            Acompanha as tuas séries favoritas, descobre novos mangas e organiza a tua lista.
+          </p>
+          
+          {/* NAVEGAÇÃO VISUAL (CARTÕES) */}
+          <div className="row justify-content-center g-4 mb-5">
+            
+            {/* Cartão ANIME - Usei uma imagem mais estável */}
+            <div className="col-md-5">
+              <Link to="/animes">
+                <div className="nav-card">
+                  <img 
+                    src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1000&auto=format&fit=crop" 
+                    alt="Animes" 
+                    className="nav-card-bg"
+                    onError={handleImageError} 
+                  />
+                  <div className="nav-card-content">
+                    <h2 className="nav-card-title">🎬 Animes</h2>
+                    <span className="btn btn-outline-light rounded-pill px-4 mt-2">Explorar</span>
                   </div>
                 </div>
-              )
-            })}
+              </Link>
+            </div>
+
+            {/* Cartão MANGA - Usei uma imagem mais estável */}
+            <div className="col-md-5">
+              <Link to="/mangas">
+                <div className="nav-card">
+                  <img 
+                    src="https://images.unsplash.com/photo-1613376023733-0a73315d9b06?q=80&w=1000&auto=format&fit=crop" 
+                    alt="Mangas" 
+                    className="nav-card-bg" 
+                    onError={handleImageError}
+                  />
+                  <div className="nav-card-content">
+                    <h2 className="nav-card-title">📚 Mangas</h2>
+                    <span className="btn btn-outline-light rounded-pill px-4 mt-2">Ler Mais</span>
+                  </div>
+                </div>
+              </Link>
+            </div>
+
           </div>
-          <div className="d-flex justify-content-center align-items-center gap-3 mt-4">
-            <button className="btn btn-secondary" onClick={() => setPage(page - 1)} disabled={page === 1}>&larr; Anterior</button>
-            <span className="fw-bold">Página {page} de {lastPage}</span>
-            <button className="btn btn-secondary" onClick={() => setPage(page + 1)} disabled={page === lastPage}>Próximo &rarr;</button>
+        </div>
+
+        {/* MARQUEE (FAIXA A CORRER) */}
+        {topAnimesHero.length > 0 && (
+          <div className="marquee-container" style={{ marginTop: '40px' }}>
+            <div className="marquee-track">
+              {[...topAnimesHero, ...topAnimesHero].map((item, index) => (
+                <div key={index} className="marquee-item">
+                  <img 
+                    src={item.images?.jpg?.image_url || PLACEHOLDER_IMG} 
+                    alt={item.title} 
+                    onError={handleImageError}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        </>
-      )}
+        )}
+      </div>
+
+      {/* SECÇÃO: DESTAQUES DA TEMPORADA */}
+      <div className="container my-5">
+        <div className="d-flex align-items-center justify-content-between mb-4">
+          <h2 className="fw-bold border-start border-4 border-primary ps-3">🔥 A sair nesta Temporada</h2>
+          <Link to="/animes" className="text-decoration-none fw-bold">Ver todos &rarr;</Link>
+        </div>
+
+        <div className="row">
+          {seasonNow.map((anime) => (
+            <div key={anime.mal_id} className="col-6 col-md-4 col-lg-2 mb-4">
+              <div className="card h-100 shadow-sm border-0 hover-effect">
+                <Link to={`/detalhes/${anime.mal_id}`} className="text-decoration-none text-dark">
+                  <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '10px' }}>
+                    {/* Aqui usamos Optional Chaining (?.) para não dar erro se a imagem faltar */}
+                    <img 
+                      src={anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || PLACEHOLDER_IMG} 
+                      className="card-img-top" 
+                      style={{ height: '250px', objectFit: 'cover' }} 
+                      alt={anime.title} 
+                      onError={handleImageError}
+                    />
+                    <div className="position-absolute bottom-0 start-0 w-100 p-2" 
+                         style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)' }}>
+                      <span className="text-white small fw-bold">⭐ {anime.score || 'N/A'}</span>
+                    </div>
+                  </div>
+                  <div className="card-body p-2">
+                    <h6 className="card-title small fw-bold text-truncate mb-0 mt-1">
+                      {anime.title}
+                    </h6>
+                    <small className="text-muted">{anime.episodes ? `${anime.episodes} eps` : 'Em curso'}</small>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
+
 export default Home
