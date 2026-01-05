@@ -70,7 +70,7 @@ function Navbar({ darkMode, toggleTheme }) {
                 {loadingRandom ? (
                   <div className="spinner-border spinner-border-sm" role="status"></div>
                 ) : (
-                  <>🎲 Surpreende-me</>
+                  <>🎲</>
                 )}
               </button>
             </li>
