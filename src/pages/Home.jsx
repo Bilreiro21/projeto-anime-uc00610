@@ -4,28 +4,30 @@ import { Link } from 'react-router-dom'
 function Home() {
   const [topAnimesHero, setTopAnimesHero] = useState([])
   const [seasonNow, setSeasonNow] = useState([])
+  const [heroAnime, setHeroAnime] = useState(null)
 
-  // Imagem de substituição caso a API falhe (Um cinzento neutro com texto)
-  const PLACEHOLDER_IMG = "https://placehold.co/400x600/2c3e50/ffffff?text=Sem+Imagem";
+  const PLACEHOLDER_IMG = "https://placehold.co/400x600/16161a/ffffff?text=Sem+Imagem"
 
   useEffect(() => {
     const carregarDados = async () => {
       try {
-        // 1. Carregar Top Animes
-        const resTop = await fetch('https://api.jikan.moe/v4/top/anime?limit=10');
+        const resSeason = await fetch('https://api.jikan.moe/v4/seasons/now?limit=10');
+        if (resSeason.ok) {
+          const data = await resSeason.json();
+          const animes = data.data || [];
+          setSeasonNow(animes);
+          // Pick the highest scored or most popular anime from this season for the Hero
+          if (animes.length > 0) {
+            setHeroAnime(animes[0]);
+          }
+        }
+
+        await new Promise(r => setTimeout(r, 800));
+
+        const resTop = await fetch('https://api.jikan.moe/v4/top/anime?limit=14');
         if (resTop.ok) {
           const data = await resTop.json();
           setTopAnimesHero(data.data || []);
-        }
-
-        // Delay para não bloquear a API
-        await new Promise(r => setTimeout(r, 800));
-
-        // 2. Carregar Temporada Atual
-        const resSeason = await fetch('https://api.jikan.moe/v4/seasons/now?limit=6');
-        if (resSeason.ok) {
-          const data = await resSeason.json();
-          setSeasonNow(data.data || []);
         }
 
       } catch (error) {
@@ -36,118 +38,116 @@ function Home() {
     carregarDados();
   }, []);
 
-  // Função para tratar erro de imagem (se a imagem quebrar, põe a de substituição)
   const handleImageError = (e) => {
     e.target.src = PLACEHOLDER_IMG;
   };
 
   return (
     <div>
-      {/* HERO SECTION ANIMADA */}
-      <div className="hero-animated">
-        <div className="container text-center">
-          <h1 className="hero-title display-4 mb-3">O Teu Portal de Anime</h1>
-          <p className="lead mb-5 opacity-75">
-            Acompanha as tuas séries favoritas, descobre novos mangas e organiza a tua lista.
-          </p>
-          
-          {/* NAVEGAÇÃO VISUAL (CARTÕES) */}
-          <div className="row justify-content-center g-4 mb-5">
-            
-            {/* Cartão ANIME - Usei uma imagem mais estável */}
-            <div className="col-md-5">
-              <Link to="/animes">
-                <div className="nav-card">
-                  <img 
-                    src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1000&auto=format&fit=crop" 
-                    alt="Animes" 
-                    className="nav-card-bg"
-                    onError={handleImageError} 
-                  />
-                  <div className="nav-card-content">
-                    <h2 className="nav-card-title">🎬 Animes</h2>
-                    <span className="btn btn-outline-light rounded-pill px-4 mt-2">Explorar</span>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            {/* Cartão MANGA - Usei uma imagem mais estável */}
-            <div className="col-md-5">
-              <Link to="/mangas">
-                <div className="nav-card">
-                  <img 
-                    src="https://images.unsplash.com/photo-1613376023733-0a73315d9b06?q=80&w=1000&auto=format&fit=crop" 
-                    alt="Mangas" 
-                    className="nav-card-bg" 
-                    onError={handleImageError}
-                  />
-                  <div className="nav-card-content">
-                    <h2 className="nav-card-title">📚 Mangas</h2>
-                    <span className="btn btn-outline-light rounded-pill px-4 mt-2">Ler Mais</span>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-          </div>
-        </div>
-
-        {/* MARQUEE (FAIXA A CORRER) */}
-        {topAnimesHero.length > 0 && (
-          <div className="marquee-container" style={{ marginTop: '40px' }}>
-            <div className="marquee-track">
-              {[...topAnimesHero, ...topAnimesHero].map((item, index) => (
-                <div key={index} className="marquee-item">
-                  <img 
-                    src={item.images?.jpg?.image_url || PLACEHOLDER_IMG} 
-                    alt={item.title} 
-                    onError={handleImageError}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* SECÇÃO: DESTAQUES DA TEMPORADA */}
-      <div className="container my-5">
-        <div className="d-flex align-items-center justify-content-between mb-4">
-          <h2 className="fw-bold border-start border-4 border-primary ps-3">🔥 A sair nesta Temporada</h2>
-          <Link to="/animes" className="text-decoration-none fw-bold">Ver todos &rarr;</Link>
-        </div>
-
-        <div className="row">
-          {seasonNow.map((anime) => (
-            <div key={anime.mal_id} className="col-6 col-md-4 col-lg-2 mb-4">
-              <div className="card h-100 shadow-sm border-0 hover-effect">
-                <Link to={`/detalhes/${anime.mal_id}`} className="text-decoration-none text-dark">
-                  <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '10px' }}>
-                    {/* Aqui usamos Optional Chaining (?.) para não dar erro se a imagem faltar */}
-                    <img 
-                      src={anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || PLACEHOLDER_IMG} 
-                      className="card-img-top" 
-                      style={{ height: '250px', objectFit: 'cover' }} 
-                      alt={anime.title} 
-                      onError={handleImageError}
-                    />
-                    <div className="position-absolute bottom-0 start-0 w-100 p-2" 
-                         style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)' }}>
-                      <span className="text-white small fw-bold">⭐ {anime.score || 'N/A'}</span>
-                    </div>
-                  </div>
-                  <div className="card-body p-2">
-                    <h6 className="card-title small fw-bold text-truncate mb-0 mt-1">
-                      {anime.title}
-                    </h6>
-                    <small className="text-muted">{anime.episodes ? `${anime.episodes} eps` : 'Em curso'}</small>
-                  </div>
+      {/* HERO SECTION */}
+      <div 
+        className="hero-animated" 
+        style={{ 
+          backgroundImage: heroAnime 
+            ? `url(${heroAnime.trailer?.images?.maximum_image_url || heroAnime.images?.jpg?.large_image_url})` 
+            : 'url(https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=2000&auto=format&fit=crop)'
+        }}
+      >
+        <div className="container hero-content">
+          <div className="row">
+            <div className="col-lg-6">
+              <span className="badge bg-primary mb-3 text-uppercase fw-bold tracking-wide" style={{ background: 'var(--accent-color)' }}>
+                Em Destaque
+              </span>
+              <h1 className="hero-title">{heroAnime ? heroAnime.title : 'Bem-vindo ao AniVerse'}</h1>
+              <p className="lead mb-4" style={{ color: 'var(--text-muted)' }}>
+                {heroAnime?.synopsis ? `${heroAnime.synopsis.substring(0, 150)}...` : 'Descobre os teus animes favoritos, cria a tua Anime List e acompanha as tuas séries!'}
+              </p>
+              <div className="d-flex gap-3">
+                {heroAnime && (
+                  <Link to={`/detalhes/${heroAnime.mal_id}`} className="btn btn-primary rounded-pill px-4 py-2 fw-bold">
+                    <i className="bi bi-play-fill me-2"></i> Ver Detalhes
+                  </Link>
+                )}
+                <Link to="/animes" className="btn btn-outline-light rounded-pill px-4 py-2 fw-bold" style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(5px)', border: 'none' }}>
+                  Explorar Catálogo
                 </Link>
               </div>
             </div>
-          ))}
+          </div>
         </div>
+      </div>
+
+      <div className="container" style={{ marginTop: '-40px', position: 'relative', zIndex: 10 }}>
+        
+        {/* SECÇÃO: TEMPORADA ATUAL (Horizontal Scroll) */}
+        <div className="mb-5">
+          <div className="d-flex align-items-center justify-content-between mb-4">
+            <h2 className="fw-800 m-0" style={{ fontSize: '1.5rem' }}>
+              <span style={{ color: 'var(--accent-color)' }}>|</span> A sair nesta Temporada
+            </h2>
+            <Link to="/animes" className="text-decoration-none fw-bold" style={{ color: 'var(--text-muted)' }}>Ver todos &rarr;</Link>
+          </div>
+
+          <div className="horizontal-scroll">
+            {seasonNow.map((anime) => (
+              <Link to={`/detalhes/${anime.mal_id}`} key={anime.mal_id} className="text-decoration-none">
+                <div className="anime-card">
+                  <img 
+                    src={anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || PLACEHOLDER_IMG} 
+                    className="anime-card-img" 
+                    alt={anime.title} 
+                    onError={handleImageError}
+                  />
+                  <div className="score-badge">
+                    <span>★</span> {anime.score ? anime.score.toFixed(1) : 'N/A'}
+                  </div>
+                  <div className="anime-card-overlay">
+                    <h3 className="anime-card-title">{anime.title}</h3>
+                    <div className="anime-card-meta">
+                      <span>{anime.type}</span>
+                      <span>{anime.year || 'Em curso'}</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* SECÇÃO: TOP ANIMES (Grelha) */}
+        <div className="mb-5 mt-5">
+          <div className="d-flex align-items-center mb-4">
+            <h2 className="fw-800 m-0" style={{ fontSize: '1.5rem' }}>
+              <span style={{ color: 'var(--accent-color)' }}>|</span> Top Animes Populares
+            </h2>
+          </div>
+
+          <div className="anime-grid">
+            {topAnimesHero.map((anime) => (
+              <Link to={`/detalhes/${anime.mal_id}`} key={anime.mal_id} className="text-decoration-none">
+                <div className="anime-card">
+                  <img 
+                    src={anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || PLACEHOLDER_IMG} 
+                    className="anime-card-img" 
+                    alt={anime.title} 
+                    onError={handleImageError}
+                  />
+                  <div className="score-badge">
+                    <span>★</span> {anime.score ? anime.score.toFixed(1) : 'N/A'}
+                  </div>
+                  <div className="anime-card-overlay">
+                    <h3 className="anime-card-title">{anime.title}</h3>
+                    <div className="anime-card-meta">
+                      <span>{anime.episodes ? `${anime.episodes} eps` : anime.type}</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   )
