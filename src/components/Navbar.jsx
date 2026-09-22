@@ -64,6 +64,12 @@ function Navbar() {
             </li>
 
             <li className="nav-item">
+              <Link to="/temporadas" className={`nav-link link-hover ${isActive('/temporadas')}`} onClick={closeMenu}>
+                Temporadas
+              </Link>
+            </li>
+
+            <li className="nav-item">
               <Link to="/mangas" className={`nav-link link-hover ${isActive('/mangas')}`} onClick={closeMenu}>
                 Mangas
               </Link>

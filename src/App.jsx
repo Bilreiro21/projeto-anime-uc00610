@@ -8,6 +8,7 @@ import Detalhes from './pages/Detalhes'
 import Favoritos from './pages/Favoritos'
 import Animes from './pages/Animes'
 import Mangas from './pages/Mangas'
+import Temporadas from './pages/Temporadas'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/animes" element={<Animes />} />
           <Route path="/mangas" element={<Mangas />} />
+          <Route path="/temporadas" element={<Temporadas />} />
           <Route path="/favoritos" element={<Favoritos />} />
           <Route path="/detalhes/:type/:id" element={<Detalhes />} />
         </Routes>
