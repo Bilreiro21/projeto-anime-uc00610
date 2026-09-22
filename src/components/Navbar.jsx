@@ -1,33 +1,16 @@
-import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 function Navbar() {
-  const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
-  const [loadingRandom, setLoadingRandom] = useState(false);
 
   const closeMenu = () => {
     const navbarCollapse = document.getElementById('navbarNav');
     if (navbarCollapse && navbarCollapse.classList.contains('show')) {
       navbarCollapse.classList.remove('show');
     }
-  };
-
-  const handleRandomAnime = () => {
-    setLoadingRandom(true);
-    fetch('https://api.jikan.moe/v4/random/anime')
-      .then(res => res.json())
-      .then(data => {
-        const randomId = data.data.mal_id;
-        setLoadingRandom(false);
-        navigate(`/detalhes/anime/${randomId}`);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoadingRandom(false);
-      });
   };
 
   const isActive = (path) => location.pathname === path ? 'active' : '';
@@ -38,7 +21,9 @@ function Navbar() {
         
         {/* LOGO */}
         <Link className="navbar-brand d-flex align-items-center gap-2 text-white" to="/" onClick={closeMenu}>
-          <span style={{ fontFamily: 'var(--font-marck-script), cursive', fontSize: '2rem' }}>Sorai</span>
+          <span className="fw-800" style={{ fontSize: '1.8rem', letterSpacing: '-1px', background: 'linear-gradient(to right, #00f2fe, #4facfe)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            AniVerse
+          </span>
         </Link>
 
         {/* MOBILE TOGGLE */}
@@ -56,7 +41,7 @@ function Navbar() {
         
         <div className="collapse navbar-collapse" id="navbarNav">
           
-          <ul className="navbar-nav mx-auto mb-2 mb-lg-0 align-items-start align-items-lg-center gap-lg-4">
+          <ul className="navbar-nav mx-auto mb-2 mb-lg-0 align-items-start align-items-lg-center gap-lg-4 fw-bold">
             
             <li className="nav-item">
               <Link to="/" className={`nav-link link-hover ${isActive('/')}`} onClick={closeMenu}>
@@ -82,39 +67,24 @@ function Navbar() {
           </ul>
 
           <div className="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-3 mt-3 mt-lg-0">
-            <button 
-              className="btn btn-outline-light d-flex align-items-center gap-2"
-              onClick={handleRandomAnime}
-              disabled={loadingRandom}
-              style={{ borderRadius: '12px', borderColor: 'var(--border-color)', padding: '8px 16px', fontSize: '0.9rem' }}
-            >
-              {loadingRandom ? (
-                <div className="spinner-border spinner-border-sm" role="status"></div>
-              ) : (
-                <><i className="bi bi-dice-5"></i> Random</>
-              )}
-            </button>
-
-            <div className="vr d-none d-lg-block mx-2" style={{ backgroundColor: 'var(--border-color)' }}></div>
-
             {user ? (
               <div className="dropdown">
                 <button className="btn text-white dropdown-toggle d-flex align-items-center gap-2 border-0 bg-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <div className="rounded-circle d-flex justify-content-center align-items-center" style={{ width: '35px', height: '35px', backgroundColor: 'var(--accent-color)', fontWeight: 'bold' }}>
+                  <div className="rounded-circle d-flex justify-content-center align-items-center" style={{ width: '35px', height: '35px', background: 'linear-gradient(45deg, #00f2fe, #4facfe)', fontWeight: 'bold', color: '#000' }}>
                     {user.username.charAt(0).toUpperCase()}
                   </div>
-                  <span className="fw-bold">{user.username}</span>
+                  <span className="fw-bold text-white">{user.username}</span>
                 </button>
-                <ul className="dropdown-menu dropdown-menu-end shadow" style={{ backgroundColor: 'var(--bg-panel)', borderColor: 'var(--border-color)' }}>
-                  <li><Link className="dropdown-item text-white" to="/favoritos" onClick={closeMenu}>Minha Lista</Link></li>
-                  <li><hr className="dropdown-divider" style={{ borderColor: 'var(--border-color)' }} /></li>
-                  <li><button className="dropdown-item text-danger" onClick={() => { logout(); closeMenu(); }}>Sign out</button></li>
+                <ul className="dropdown-menu dropdown-menu-end shadow border-0" style={{ backgroundColor: 'var(--bg-panel)', backdropFilter: 'blur(10px)' }}>
+                  <li><Link className="dropdown-item text-white hover-neon" to="/favoritos" onClick={closeMenu}>Minha Lista</Link></li>
+                  <li><hr className="dropdown-divider" style={{ borderColor: 'rgba(255,255,255,0.1)' }} /></li>
+                  <li><button className="dropdown-item text-danger hover-neon" onClick={() => { logout(); closeMenu(); }}>Terminar Sessão</button></li>
                 </ul>
               </div>
             ) : (
               <div className="d-flex flex-column flex-lg-row gap-2 w-100">
-                <Link to="/login" className="btn text-white fw-bold px-4 transition-all" style={{ border: '1px solid var(--glass-bg)', borderRadius: '12px' }} onClick={closeMenu}>Sign in</Link>
-                <Link to="/register" className="btn btn-light text-dark fw-bold px-4 transition-all" style={{ borderRadius: '12px' }} onClick={closeMenu}>Create free account</Link>
+                <Link to="/login" className="btn fw-bold px-4 transition-all hover-glow" style={{ color: '#fff', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }} onClick={closeMenu}>Login</Link>
+                <Link to="/register" className="btn text-dark fw-bold px-4 transition-all btn-neon" style={{ borderRadius: '12px', background: 'linear-gradient(to right, #00f2fe, #4facfe)', border: 'none' }} onClick={closeMenu}>Criar Conta</Link>
               </div>
             )}
           </div>

@@ -25,10 +25,10 @@ function Register() {
 
   return (
     <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: '80vh', paddingTop: '100px' }}>
-      <div className="bento-box p-5 w-100" style={{ maxWidth: '400px' }}>
+      <div className="bento-box p-5 w-100 glass-panel border-neon" style={{ maxWidth: '400px' }}>
         <div className="text-center mb-4">
-          <h2 className="fw-800 text-white" style={{ fontFamily: 'var(--font-marck-script), cursive', fontSize: '2.5rem' }}>Sorai</h2>
-          <p className="text-muted small">Create your free account</p>
+          <h2 className="fw-800 text-white" style={{ fontSize: '2.5rem', background: 'linear-gradient(to right, #00f2fe, #4facfe)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AniVerse</h2>
+          <p className="text-muted small">Cria a tua conta grátis</p>
         </div>
         
         <form onSubmit={handleSubmit}>

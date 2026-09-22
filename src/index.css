@@ -1,29 +1,75 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Marck+Script&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
-  --bg-color: #000000; /* Deep black like Sorai */
-  --bg-panel: #0a0a0a; /* Surface */
-  --bg-panel-hover: #171717;
-  --accent-color: #9333ea; /* Purple 600 */
-  --accent-hover: #a855f7; /* Purple 500 */
-  --text-main: #fafafa;
-  --text-muted: #a1a1aa;
-  --border-color: rgba(255, 255, 255, 0.08);
-  --glass-bg: rgba(0, 0, 0, 0.5);
+  --bg-color: #030014; /* Deep space dark */
+  --bg-panel: rgba(10, 10, 25, 0.6); /* Translucent dark */
+  --bg-panel-hover: rgba(20, 20, 40, 0.8);
+  --accent-color: #00f2fe; /* Cyan neon */
+  --accent-hover: #4facfe; /* Light blue */
+  --neon-glow: 0 0 10px rgba(0, 242, 254, 0.5), 0 0 20px rgba(0, 242, 254, 0.3);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-color: rgba(255, 255, 255, 0.05);
+  --glass-bg: rgba(3, 0, 20, 0.7);
   --bento-radius: 20px;
-  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.8);
 }
 
 body {
-  font-family: "Outfit", sans-serif;
+  font-family: "Inter", sans-serif;
   background-color: var(--bg-color);
+  background-image: radial-gradient(circle at top right, rgba(79, 172, 254, 0.1), transparent 400px),
+                    radial-gradient(circle at bottom left, rgba(147, 51, 234, 0.1), transparent 400px);
+  background-attachment: fixed;
   color: var(--text-main);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-.bg-sorai-gradient {
-  background: linear-gradient(135deg, #7e22ce 0%, #4c1d95 100%);
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+  font-family: "Outfit", sans-serif;
+}
+
+/* Neon Glassmorphism Utilities */
+.glass-panel {
+  background: var(--bg-panel);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+}
+
+.border-neon {
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  transition: all 0.3s ease;
+}
+
+.border-neon:hover {
+  border-color: var(--accent-color);
+  box-shadow: var(--neon-glow);
+}
+
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  text-shadow: 0 0 8px var(--accent-color);
+  color: var(--accent-color) !important;
+}
+
+.text-glow {
+  text-shadow: var(--neon-glow);
+}
+
+.bg-aniverse-gradient {
+  background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.05) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.hero-neon-border {
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  box-shadow: inset 0 0 20px rgba(0, 242, 254, 0.1), 0 10px 30px rgba(0,0,0,0.5);
 }
 
 /* Utilitários de Texto */
