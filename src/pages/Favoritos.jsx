@@ -67,10 +67,7 @@ function Favoritos() {
 
       {/* SEPARADORES / TABS (MODERN SEGMENTED CONTROL) */}
       <div className="d-flex justify-content-center mb-5">
-        <div 
-          className="d-inline-flex flex-wrap gap-2 p-2 rounded-4 shadow-sm" 
-          style={{ backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border-color)' }}
-        >
+        <div className="bento-box d-inline-flex flex-wrap gap-2 p-2" style={{ borderRadius: '999px' }}>
           {tabs.map(tab => {
             const count = tab.id === 'todos' ? lista.length : lista.filter(i => i.listStatus === tab.id).length;
             const isActive = filtro === tab.id;

@@ -155,7 +155,7 @@ function Detalhes() {
           />
           
           {/* MyAnimeList Tracker Panel */}
-          <div className="p-4 rounded mb-4" style={{ backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border-color)' }}>
+          <div className="bento-box mb-4">
             <h5 className="fw-bold mb-3 text-white border-bottom pb-2" style={{ borderColor: 'var(--border-color) !important' }}>A Minha Lista</h5>
             
             <div className="mb-3">

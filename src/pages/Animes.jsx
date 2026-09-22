@@ -39,7 +39,7 @@ function Animes() {
       {/* BARRA DE PESQUISA */}
       <div className="row justify-content-center mb-5">
         <div className="col-12 col-lg-10">
-          <form onSubmit={handlePesquisa} className="d-flex flex-column flex-md-row gap-2 p-3 rounded" style={{ backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border-color)' }}>
+          <form onSubmit={handlePesquisa} className="bento-box d-flex flex-column flex-md-row gap-3 p-4">
             <input 
               type="text" 
               className="form-control border-0 text-white" 

@@ -69,7 +69,7 @@ function Temporadas() {
       {/* CONTROLOS DE FILTRAGEM E ESTAÇÃO */}
       <div className="row justify-content-center mb-5">
         <div className="col-12 col-lg-10">
-          <div className="d-flex flex-column flex-md-row justify-content-between gap-4 p-4 rounded-4 shadow-sm" style={{ backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border-color)' }}>
+          <div className="bento-box d-flex flex-column flex-md-row justify-content-between gap-4 p-4">
             
             {/* Esquerda: Seletor de Ano/Estação */}
             <div className="d-flex flex-column flex-md-row gap-3">
