@@ -1,75 +1,46 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
-  --bg-color: #030014; /* Deep space dark */
-  --bg-panel: rgba(10, 10, 25, 0.6); /* Translucent dark */
-  --bg-panel-hover: rgba(20, 20, 40, 0.8);
-  --accent-color: #00f2fe; /* Cyan neon */
-  --accent-hover: #4facfe; /* Light blue */
-  --neon-glow: 0 0 10px rgba(0, 242, 254, 0.5), 0 0 20px rgba(0, 242, 254, 0.3);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border-color: rgba(255, 255, 255, 0.05);
-  --glass-bg: rgba(3, 0, 20, 0.7);
+  --bg-color: #000000;
+  --bg-surface: #111111;
+  --bg-panel: #1a1a1a;
+  --bg-panel-hover: #262626;
+  --accent-color: #f05039;
+  --accent-hover: #e0442f;
+  
+  --text-main: #ffffff;
+  --text-muted: #9ca3af;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(26, 26, 26, 0.7);
   --bento-radius: 20px;
-  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.8);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 body {
   font-family: "Inter", sans-serif;
   background-color: var(--bg-color);
-  background-image: radial-gradient(circle at top right, rgba(79, 172, 254, 0.1), transparent 400px),
-                    radial-gradient(circle at bottom left, rgba(147, 51, 234, 0.1), transparent 400px);
-  background-attachment: fixed;
   color: var(--text-main);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, h5, h6, .navbar-brand {
-  font-family: "Outfit", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
-/* Neon Glassmorphism Utilities */
+/* Sorai Layout Utilities */
+.bg-background { background-color: var(--bg-color); }
+.bg-surface { background-color: var(--bg-surface); }
+.text-text-primary { color: var(--text-main); }
+.text-primary { color: var(--accent-color); }
+.max-w-container { max-width: 1200px; margin: 0 auto; }
+
+/* Glassmorphism Utilities */
 .glass-panel {
   background: var(--bg-panel);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
-}
-
-.border-neon {
-  border: 1px solid rgba(0, 242, 254, 0.2);
-  transition: all 0.3s ease;
-}
-
-.border-neon:hover {
-  border-color: var(--accent-color);
-  box-shadow: var(--neon-glow);
-}
-
-.hover-glow {
-  transition: all 0.3s ease;
-}
-
-.hover-glow:hover {
-  text-shadow: 0 0 8px var(--accent-color);
-  color: var(--accent-color) !important;
-}
-
-.text-glow {
-  text-shadow: var(--neon-glow);
-}
-
-.bg-aniverse-gradient {
-  background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.05) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-.hero-neon-border {
-  border: 1px solid rgba(0, 242, 254, 0.3);
-  box-shadow: inset 0 0 20px rgba(0, 242, 254, 0.1), 0 10px 30px rgba(0,0,0,0.5);
 }
 
 /* Sorai Auth Layout Styles */
@@ -203,7 +174,7 @@ a:hover {
 }
 
 /* =========================================
-   2. NAVBAR & LINKS (Glassmorphism)
+   2. NAVBAR & LINKS
    ========================================= */
 .navbar {
   background: var(--bg-color) !important;
@@ -229,85 +200,142 @@ a:hover {
   color: var(--text-main) !important;
 }
 
-.link-hover::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -4px;
-  left: 0;
-  background-color: var(--accent-color);
-  transition: width 0.3s ease;
-}
-
-.link-hover:hover::after, .link-hover.active::after {
-  width: 100%;
-}
-
 /* =========================================
-   3. HERO SECTION (HOME PAGE)
+   3. HERO SECTION & SORAI HOME LAYOUT
    ========================================= */
 .hero-animated {
   position: relative;
-  min-height: 60vh;
+  min-height: 560px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  margin-top: -80px; /* pull up under transparent navbar */
-  padding-top: 100px;
+  justify-content: flex-end;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  padding-bottom: 40px;
 }
 
 .hero-animated::after {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to top, var(--bg-color) 0%, rgba(9,9,11,0.4) 100%);
+  background: linear-gradient(to top, var(--bg-color) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.8) 100%);
   z-index: 1;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  padding: 0 20px;
 }
 
 .hero-title {
   font-weight: 800;
-  font-size: 2.8rem;
+  font-size: 2.5rem;
   line-height: 1.1;
   margin-bottom: 1rem;
   text-shadow: 0 4px 20px rgba(0,0,0,0.8);
-  animation: fadeUp 1s ease-out;
-}
-
-.hero-description {
-  animation: fadeUp 1s ease-out 0.2s both;
-}
-
-.hero-buttons {
-  animation: fadeUp 1s ease-out 0.4s both;
 }
 
 @media (min-width: 768px) {
   .hero-title {
-    font-size: 4.5rem;
+    font-size: 3.5rem;
   }
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Top Ranking Sorai Style */
+.top-ranking__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
-/* Navbar mobile collapse glass effect */
+.top-ranking__header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.top-ranking__tabs {
+  display: flex;
+  background-color: var(--bg-panel);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.top-ranking__tab {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.top-ranking__tab--active {
+  background-color: var(--bg-panel-hover);
+  color: #fff;
+}
+
+.top-ranking__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s;
+}
+
+.top-ranking__row:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.top-ranking__rank {
+  font-weight: 700;
+  font-size: 1rem;
+  width: 24px;
+  color: var(--text-muted);
+}
+
+.top-ranking__rank.rank-1 { color: #f05039; }
+.top-ranking__rank.rank-2 { color: #f59e0b; }
+.top-ranking__rank.rank-3 { color: #3b82f6; }
+
+.top-ranking__cover {
+  width: 48px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.top-ranking__info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.top-ranking__title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.top-ranking__score {
+  font-size: 0.85rem;
+  color: #ffc107;
+  font-weight: 600;
+}
+
+/* Navbar mobile collapse */
 @media (max-width: 991px) {
   .navbar-collapse {
-    background: rgba(13, 13, 15, 0.95);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    background: var(--bg-panel);
     padding: 20px;
     border-radius: 12px;
     margin-top: 15px;
