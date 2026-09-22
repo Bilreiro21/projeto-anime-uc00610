@@ -73,10 +73,10 @@ function Animes() {
         <>
           <div className="anime-grid">
             {animes.map((anime) => (
-              <Link to={`/detalhes/${anime.mal_id}`} key={anime.mal_id} className="text-decoration-none">
+              <Link to={`/detalhes/anime/${anime.mal_id}`} key={anime.mal_id} className="text-decoration-none">
                 <div className="anime-card">
                   <img 
-                    src={anime.images.jpg.large_image_url || anime.images.jpg.image_url} 
+                    src={anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url} 
                     className="anime-card-img" 
                     alt={anime.title} 
                   />

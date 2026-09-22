@@ -65,7 +65,7 @@ function Home() {
               </p>
               <div className="d-flex gap-3 hero-buttons">
                 {heroAnime && (
-                  <Link to={`/detalhes/${heroAnime.mal_id}`} className="btn btn-primary rounded-pill px-4 py-2 fw-bold">
+                  <Link to={`/detalhes/anime/${heroAnime.mal_id}`} className="btn btn-primary rounded-pill px-4 py-2 fw-bold">
                     <i className="bi bi-play-fill me-2"></i> Ver Detalhes
                   </Link>
                 )}
@@ -91,7 +91,7 @@ function Home() {
 
           <div className="horizontal-scroll">
             {seasonNow.map((anime) => (
-              <Link to={`/detalhes/${anime.mal_id}`} key={anime.mal_id} className="text-decoration-none">
+              <Link to={`/detalhes/anime/${anime.mal_id}`} key={anime.mal_id} className="text-decoration-none">
                 <div className="anime-card">
                   <img 
                     src={anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || PLACEHOLDER_IMG} 
@@ -125,7 +125,7 @@ function Home() {
 
           <div className="anime-grid">
             {topAnimesHero.map((anime) => (
-              <Link to={`/detalhes/${anime.mal_id}`} key={anime.mal_id} className="text-decoration-none">
+              <Link to={`/detalhes/anime/${anime.mal_id}`} key={anime.mal_id} className="text-decoration-none">
                 <div className="anime-card">
                   <img 
                     src={anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || PLACEHOLDER_IMG} 

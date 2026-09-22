@@ -20,8 +20,7 @@ function Navbar() {
       .then(data => {
         const randomId = data.data.mal_id;
         setLoadingRandom(false);
-        closeMenu();
-        navigate(`/detalhes/${randomId}`);
+        navigate(`/detalhes/anime/${randomId}`);
       })
       .catch(err => {
         console.error(err);

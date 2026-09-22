@@ -29,7 +29,7 @@ function App() {
           <Route path="/animes" element={<Animes />} />
           <Route path="/mangas" element={<Mangas />} />
           <Route path="/favoritos" element={<Favoritos />} />
-          <Route path="/detalhes/:id" element={<Detalhes />} />
+          <Route path="/detalhes/:type/:id" element={<Detalhes />} />
         </Routes>
       </div>
       <Footer />

@@ -48,7 +48,7 @@ function ReviewItem({ review }) {
 }
 
 function Detalhes() {
-  const { id } = useParams();
+  const { type, id } = useParams();
   const [anime, setAnime] = useState(null);
   const [loading, setLoading] = useState(true);
   
@@ -75,23 +75,23 @@ function Detalhes() {
       setListScore(0);
     }
 
-    fetch(`https://api.jikan.moe/v4/anime/${id}`)
+    fetch(`https://api.jikan.moe/v4/${type}/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setAnime(data.data);
-        return fetch(`https://api.jikan.moe/v4/anime/${id}/recommendations`);
+        return fetch(`https://api.jikan.moe/v4/${type}/${id}/recommendations`);
       })
       .then((res) => res.json())
       .then((data) => {
         setRecs(data.data || []);
-        return fetch(`https://api.jikan.moe/v4/anime/${id}/characters`);
+        return fetch(`https://api.jikan.moe/v4/${type}/${id}/characters`);
       })
       .then((res) => res.json())
       .then((data) => {
         const principais = data.data?.filter(c => c.role === "Main") || data.data?.slice(0, 10);
         const listaFinal = principais.length < 5 ? data.data?.slice(0, 15) : principais;
         setChars(listaFinal || []);
-        return fetch(`https://api.jikan.moe/v4/anime/${id}/reviews`);
+        return fetch(`https://api.jikan.moe/v4/${type}/${id}/reviews`);
       })
       .then((res) => res.json())
       .then((data) => {
@@ -318,7 +318,7 @@ function Detalhes() {
           <h3 className="mb-4 fw-bold text-white">Se gostaste, vê também...</h3>
           <div className="horizontal-scroll pb-3">
             {recs.slice(0, 10).map((item) => (
-              <Link to={`/detalhes/${item.entry.mal_id}`} key={item.entry.mal_id} className="text-decoration-none" style={{ minWidth: '160px' }}>
+              <Link to={`/detalhes/${type}/${item.entry.mal_id}`} key={item.entry.mal_id} className="text-decoration-none" style={{ minWidth: '160px' }}>
                 <div className="anime-card">
                   <img src={item.entry.images.jpg.image_url} className="anime-card-img" alt={item.entry.title} />
                   <div className="anime-card-overlay">

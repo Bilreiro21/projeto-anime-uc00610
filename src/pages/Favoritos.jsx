@@ -65,29 +65,43 @@ function Favoritos() {
         Minha <span style={{ color: 'var(--accent-color)' }}>Anime List</span>
       </h1>
 
-      {/* SEPARADORES / TABS */}
-      <div className="d-flex justify-content-center flex-wrap gap-3 mb-5 border-bottom pb-4" style={{ borderColor: 'var(--border-color) !important' }}>
-        {tabs.map(tab => {
-          const count = tab.id === 'todos' ? lista.length : lista.filter(i => i.listStatus === tab.id).length;
-          const isActive = filtro === tab.id;
-          
-          return (
-            <button 
-              key={tab.id}
-              className={`btn fw-bold px-4 py-2 rounded-pill`}
-              style={{
-                backgroundColor: isActive ? 'var(--accent-color)' : 'transparent',
-                color: isActive ? '#fff' : 'var(--text-muted)',
-                border: isActive ? 'none' : '1px solid var(--border-color)',
-                transition: 'all 0.3s'
-              }}
-              onClick={() => setFiltro(tab.id)}
-            >
-              {tab.icon && <span className="me-2">{tab.icon}</span>}
-              {tab.label} <span className="badge bg-dark ms-2">{count}</span>
-            </button>
-          );
-        })}
+      {/* SEPARADORES / TABS (MODERN SEGMENTED CONTROL) */}
+      <div className="d-flex justify-content-center mb-5">
+        <div 
+          className="d-inline-flex flex-wrap gap-2 p-2 rounded-4 shadow-sm" 
+          style={{ backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border-color)' }}
+        >
+          {tabs.map(tab => {
+            const count = tab.id === 'todos' ? lista.length : lista.filter(i => i.listStatus === tab.id).length;
+            const isActive = filtro === tab.id;
+            
+            return (
+              <button 
+                key={tab.id}
+                className={`btn fw-bold px-4 py-2 rounded-pill d-flex align-items-center gap-2`}
+                style={{
+                  backgroundColor: isActive ? 'var(--accent-color)' : 'transparent',
+                  color: isActive ? '#fff' : 'var(--text-muted)',
+                  border: 'none',
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)'
+                }}
+                onClick={() => setFiltro(tab.id)}
+              >
+                {tab.icon && <span>{tab.icon}</span>}
+                <span>{tab.label}</span>
+                <span 
+                  className="badge rounded-pill" 
+                  style={{ 
+                    backgroundColor: isActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)',
+                    color: isActive ? '#fff' : 'var(--text-muted)'
+                  }}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* LISTAGEM */}
@@ -104,8 +118,10 @@ function Favoritos() {
         </div>
       ) : (
         <div className="anime-grid">
-          {listaFiltrada.map((item) => (
-            <Link to={`/detalhes/${item.mal_id}`} key={item.mal_id} className="text-decoration-none" style={{ position: 'relative', display: 'block' }}>
+          {listaFiltrada.map((item) => {
+            const itemType = item.url?.includes('/manga/') ? 'manga' : 'anime';
+            return (
+              <Link to={`/detalhes/${itemType}/${item.mal_id}`} key={item.mal_id} className="text-decoration-none" style={{ position: 'relative', display: 'block' }}>
               <div className="anime-card">
                 <img 
                   src={item.images?.jpg?.large_image_url || item.images?.jpg?.image_url} 
@@ -157,7 +173,8 @@ function Favoritos() {
                 <i className="bi bi-x-lg"></i>
               </button>
             </Link>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
