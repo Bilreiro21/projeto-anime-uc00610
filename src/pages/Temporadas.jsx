@@ -12,10 +12,26 @@ function Temporadas() {
   const [estacao, setEstacao] = useState('now'); // 'now', 'winter', 'spring', 'summer', 'fall'
   const [filtroTipo, setFiltroTipo] = useState('tv'); // 'all', 'tv', 'movie', 'ova', 'ona', 'special'
 
+  const PLACEHOLDER_IMG = "https://placehold.co/400x600/16161a/ffffff?text=Sem+Imagem"
+
   // Dropdown options
   const anosDisponiveis = Array.from({ length: currentYear - 1989 }, (_, i) => currentYear + 1 - i); // de 1990 até o proximo ano
 
-  const carregarTemporada = () => {
+  const fetchWithRetry = async (url, retries = 3) => {
+    for (let i = 0; i < retries; i++) {
+      const res = await fetch(url);
+      if (res.ok) return res.json();
+      if (res.status === 429) {
+        // Wait exponentially before retrying
+        await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+      } else {
+        throw new Error(`Erro na API: ${res.status}`);
+      }
+    }
+    throw new Error('Max retries reached');
+  }
+
+  const carregarTemporada = async () => {
     setLoading(true);
     setErro(null);
 
@@ -24,24 +40,22 @@ function Temporadas() {
       url = `https://api.jikan.moe/v4/seasons/${ano}/${estacao}`;
     }
 
-    fetch(url)
-      .then(res => {
-        if (!res.ok) throw new Error('Erro na API do Jikan');
-        return res.json();
-      })
-      .then(data => {
-        setAnimes(data.data || []);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setErro("Não foi possível carregar os animes desta temporada.");
-        setLoading(false);
-      });
+    try {
+      const data = await fetchWithRetry(url);
+      setAnimes(data.data || []);
+    } catch (err) {
+      console.error(err);
+      setErro("Não foi possível carregar os animes desta temporada. (Rate Limit)");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    carregarTemporada();
+    const timer = setTimeout(() => {
+      carregarTemporada();
+    }, 300);
+    return () => clearTimeout(timer);
   }, [ano, estacao]);
 
   // Filtro client-side para ser instantâneo
@@ -60,35 +74,39 @@ function Temporadas() {
     { id: 'special', label: 'Especiais' }
   ];
 
-  return (
-    <div className="container mt-4 mb-5" style={{ paddingTop: '100px', minHeight: '80vh' }}>
-      <h1 className="text-center mb-4 fw-800" style={{ fontSize: '3rem' }}>
-        Animes da <span style={{ color: 'var(--accent-color)' }}>Temporada</span>
-      </h1>
+  const handleImageError = (e) => {
+    e.target.src = PLACEHOLDER_IMG;
+  };
 
-      {/* CONTROLOS DE FILTRAGEM E ESTAÇÃO */}
-      <div className="row justify-content-center mb-5">
-        <div className="col-12 col-lg-10">
-          <div className="bento-box d-flex flex-column flex-md-row justify-content-between gap-4 p-4">
+  return (
+    <div className="min-h-screen bg-background pb-5">
+      <div className="max-w-container mx-auto px-4 px-md-5 pt-5 mt-4">
+        <h1 className="fw-bold text-white mb-5" style={{ fontSize: '2.5rem' }}>
+          Seasonal Animes
+        </h1>
+
+        {/* CONTROLOS DE FILTRAGEM E ESTAÇÃO */}
+        <div className="bg-panel rounded-4 p-3 mb-5 border" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-4">
             
             {/* Esquerda: Seletor de Ano/Estação */}
-            <div className="d-flex flex-column flex-md-row gap-3">
+            <div className="d-flex flex-column flex-sm-row gap-3">
               <select 
-                className="form-select border-0 text-white fw-bold" 
-                style={{ backgroundColor: 'rgba(255,255,255,0.05)', minWidth: '150px' }}
+                className="form-select text-white" 
+                style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '12px', minWidth: '180px' }}
                 value={estacao}
                 onChange={(e) => setEstacao(e.target.value)}
               >
-                <option value="now" style={{ color: '#000' }}>Temporada Atual</option>
-                <option value="winter" style={{ color: '#000' }}>Inverno</option>
-                <option value="spring" style={{ color: '#000' }}>Primavera</option>
-                <option value="summer" style={{ color: '#000' }}>Verão</option>
-                <option value="fall" style={{ color: '#000' }}>Outono</option>
+                <option value="now" style={{ color: '#000' }}>Current Season</option>
+                <option value="winter" style={{ color: '#000' }}>Winter</option>
+                <option value="spring" style={{ color: '#000' }}>Spring</option>
+                <option value="summer" style={{ color: '#000' }}>Summer</option>
+                <option value="fall" style={{ color: '#000' }}>Fall</option>
               </select>
 
               <select 
-                className="form-select border-0 text-white fw-bold" 
-                style={{ backgroundColor: 'rgba(255,255,255,0.05)', minWidth: '120px' }}
+                className="form-select text-white" 
+                style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '12px', minWidth: '120px' }}
                 value={ano}
                 onChange={(e) => setAno(Number(e.target.value))}
                 disabled={estacao === 'now'}
@@ -102,14 +120,14 @@ function Temporadas() {
             <div className="vr d-none d-lg-block" style={{ backgroundColor: 'var(--border-color)' }}></div>
 
             {/* Direita: Segmented Control para Filtro de Formato */}
-            <div className="d-flex flex-wrap gap-1 p-1 rounded-pill" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
+            <div className="d-flex flex-wrap gap-1 p-1 rounded-pill" style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-color)' }}>
               {tipos.map(t => (
                 <button
                   key={t.id}
-                  className={`btn rounded-pill fw-bold px-3 py-1 text-uppercase`}
+                  className={`btn rounded-pill fw-bold px-3 py-1 text-uppercase transition-all`}
                   style={{
-                    backgroundColor: filtroTipo === t.id ? 'var(--accent-color)' : 'transparent',
-                    color: filtroTipo === t.id ? '#fff' : 'var(--text-muted)',
+                    backgroundColor: filtroTipo === t.id ? 'rgba(240, 80, 57, 0.1)' : 'transparent',
+                    color: filtroTipo === t.id ? '#f05039' : 'var(--text-muted)',
                     border: 'none',
                     fontSize: '0.85rem'
                   }}
@@ -122,42 +140,60 @@ function Temporadas() {
 
           </div>
         </div>
-      </div>
 
-      {loading && <div className="d-flex justify-content-center mt-5"><div className="spinner-border" style={{ color: 'var(--accent-color)' }}></div></div>}
-      {erro && <div className="alert text-center mx-auto" style={{ backgroundColor: 'rgba(220, 53, 69, 0.1)', color: '#dc3545', border: '1px solid #dc3545', maxWidth: '600px' }}>{erro}</div>}
+        {erro && <div className="alert bg-surface border text-danger text-center mb-5" style={{ borderColor: '#f05039' }}>{erro}</div>}
 
-      {!loading && !erro && animesFiltrados.length === 0 && (
-        <div className="text-center mt-5 text-muted">
-          <h4>Nenhum anime encontrado para este filtro.</h4>
-        </div>
-      )}
+        {!loading && !erro && animesFiltrados.length === 0 && (
+          <div className="text-center mt-5 text-muted">
+            <h4>No anime found for this filter.</h4>
+          </div>
+        )}
 
-      {!loading && !erro && animesFiltrados.length > 0 && (
-        <div className="anime-grid">
-          {animesFiltrados.map((anime) => (
-            <Link to={`/detalhes/anime/${anime.mal_id}`} key={anime.mal_id} className="text-decoration-none">
-              <div className="anime-card">
-                <img 
-                  src={anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url} 
-                  className="anime-card-img" 
-                  alt={anime.title} 
-                />
-                <div className="score-badge">
-                  <span>★</span> {anime.score ? anime.score.toFixed(1) : 'N/A'}
-                </div>
-                <div className="anime-card-overlay">
-                  <h3 className="anime-card-title">{anime.title}</h3>
-                  <div className="anime-card-meta">
-                    <span>{anime.type}</span>
-                    <span>{anime.episodes ? `${anime.episodes} eps` : 'Em curso'}</span>
+        <div className="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4">
+          {loading ? (
+            Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="col">
+                <div className="rounded-4 overflow-hidden bg-surface shadow-card h-100">
+                  <div className="placeholder w-100" style={{ aspectRatio: '2/3' }}></div>
+                  <div className="p-3">
+                    <div className="placeholder w-75 mb-2" style={{ height: '16px', borderRadius: '4px' }}></div>
+                    <div className="placeholder w-50" style={{ height: '12px', borderRadius: '4px' }}></div>
                   </div>
                 </div>
               </div>
-            </Link>
-          ))}
+            ))
+          ) : (
+            !erro && animesFiltrados.map((anime) => (
+              <div key={anime.mal_id} className="col">
+                <Link to={`/detalhes/anime/${anime.mal_id}`} className="text-decoration-none">
+                  <div className="rounded-4 overflow-hidden bg-surface h-100 transition-all hover-glow border" style={{ borderColor: 'var(--border-color)', boxShadow: 'var(--shadow-card)' }}>
+                    <div className="position-relative" style={{ aspectRatio: '2/3' }}>
+                      <img 
+                        src={anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || PLACEHOLDER_IMG} 
+                        alt={anime.title} 
+                        className="w-100 h-100 object-fit-cover"
+                        onError={handleImageError}
+                      />
+                      <div className="position-absolute top-0 end-0 p-2">
+                        <span className="badge rounded-pill" style={{ backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}>
+                          <i className="bi bi-star-fill text-warning" style={{ fontSize: '0.7rem' }}></i> {anime.score ? anime.score.toFixed(1) : 'N/A'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-3">
+                      <h3 className="text-white mb-1 fw-bold text-truncate" style={{ fontSize: '0.95rem' }}>{anime.title}</h3>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <p className="text-muted m-0 small">{anime.type}</p>
+                        <p className="text-muted m-0 small">{anime.episodes ? `${anime.episodes} eps` : 'Ongoing'}</p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
