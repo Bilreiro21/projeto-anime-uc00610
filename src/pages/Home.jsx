@@ -60,10 +60,10 @@ function Home() {
                 Em Destaque
               </span>
               <h1 className="hero-title">{heroAnime ? heroAnime.title : 'Bem-vindo ao AniVerse'}</h1>
-              <p className="lead mb-4" style={{ color: 'var(--text-muted)' }}>
+              <p className="lead mb-4 hero-description" style={{ color: 'var(--text-muted)' }}>
                 {heroAnime?.synopsis ? `${heroAnime.synopsis.substring(0, 150)}...` : 'Descobre os teus animes favoritos, cria a tua Anime List e acompanha as tuas séries!'}
               </p>
-              <div className="d-flex gap-3">
+              <div className="d-flex gap-3 hero-buttons">
                 {heroAnime && (
                   <Link to={`/detalhes/${heroAnime.mal_id}`} className="btn btn-primary rounded-pill px-4 py-2 fw-bold">
                     <i className="bi bi-play-fill me-2"></i> Ver Detalhes

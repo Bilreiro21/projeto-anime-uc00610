@@ -143,8 +143,16 @@ function Detalhes() {
       
       <div className="row">
         {/* ESQUERDA (POSTER & PAINEL DA LISTA) */}
-        <div className="col-md-4 mb-4">
-          <img src={anime.images.jpg.large_image_url} alt={anime.title} className="img-fluid rounded w-100 mb-4" style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }} />
+        <div className="col-md-4 mb-5 mb-md-4">
+          <img 
+            src={anime.images.jpg.large_image_url} 
+            alt={anime.title} 
+            className="img-fluid rounded w-100 mb-4" 
+            style={{ 
+              boxShadow: '0 10px 40px rgba(230, 28, 107, 0.2), 0 5px 15px rgba(0,0,0,0.5)', 
+              border: '1px solid rgba(255,255,255,0.05)' 
+            }} 
+          />
           
           {/* MyAnimeList Tracker Panel */}
           <div className="p-4 rounded mb-4" style={{ backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border-color)' }}>
