@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 
 function ReviewItem({ review }) {
   const [expandido, setExpandido] = useState(false);
@@ -49,6 +50,7 @@ function ReviewItem({ review }) {
 
 function Detalhes() {
   const { type, id } = useParams();
+  const { user } = useAuth();
   const [anime, setAnime] = useState(null);
   const [loading, setLoading] = useState(true);
   
@@ -64,15 +66,18 @@ function Detalhes() {
     window.scrollTo(0, 0); 
     setLoading(true);
 
-    // Load list status
-    const favoritos = JSON.parse(localStorage.getItem('meus-favoritos')) || [];
-    const savedEntry = favoritos.find(fav => fav.mal_id == id);
-    if (savedEntry) {
-      setListStatus(savedEntry.listStatus || 'plan_to_watch');
-      setListScore(savedEntry.listScore || 0);
-    } else {
-      setListStatus('');
-      setListScore(0);
+    // Load list status se estiver logado
+    if (user) {
+      const storageKey = `sorai-lista-${user.id}`;
+      const favoritos = JSON.parse(localStorage.getItem(storageKey)) || [];
+      const savedEntry = favoritos.find(fav => fav.mal_id == id);
+      if (savedEntry) {
+        setListStatus(savedEntry.listStatus || 'plan_to_watch');
+        setListScore(savedEntry.listScore || 0);
+      } else {
+        setListStatus('');
+        setListScore(0);
+      }
     }
 
     fetch(`https://api.jikan.moe/v4/${type}/${id}`)
@@ -102,15 +107,21 @@ function Detalhes() {
         console.error("Erro:", error);
         setLoading(false);
       });
-  }, [id]);
+  }, [id, user]);
 
   const handleUpdateList = () => {
+    if (!user) {
+      toast.error('Precisas de iniciar sessão para adicionar à lista!');
+      return;
+    }
+
     if (!listStatus) {
       toast.error('Escolhe um estado para adicionar!', { icon: '⚠️' });
       return;
     }
 
-    let favoritos = JSON.parse(localStorage.getItem('meus-favoritos')) || [];
+    const storageKey = `sorai-lista-${user.id}`;
+    let favoritos = JSON.parse(localStorage.getItem(storageKey)) || [];
     // Remove if already exists
     favoritos = favoritos.filter(fav => fav.mal_id !== anime.mal_id);
     
@@ -121,14 +132,16 @@ function Detalhes() {
       listScore: listScore
     });
 
-    localStorage.setItem('meus-favoritos', JSON.stringify(favoritos));
+    localStorage.setItem(storageKey, JSON.stringify(favoritos));
     toast.success('Lista atualizada!', { icon: '✅' });
   };
 
   const handleRemoveFromList = () => {
-    let favoritos = JSON.parse(localStorage.getItem('meus-favoritos')) || [];
+    if (!user) return;
+    const storageKey = `sorai-lista-${user.id}`;
+    let favoritos = JSON.parse(localStorage.getItem(storageKey)) || [];
     favoritos = favoritos.filter(fav => fav.mal_id !== anime.mal_id);
-    localStorage.setItem('meus-favoritos', JSON.stringify(favoritos));
+    localStorage.setItem(storageKey, JSON.stringify(favoritos));
     setListStatus('');
     setListScore(0);
     toast.success('Removido da lista.', { icon: '🗑️' });
@@ -207,10 +220,14 @@ function Detalhes() {
           <div className="p-3 rounded border" style={{ backgroundColor: 'var(--bg-panel)', borderColor: 'var(--border-color)' }}>
             <h6 className="fw-bold text-white mb-3">Informações</h6>
             <ul className="list-unstyled mb-0 small text-muted">
-              <li className="mb-2"><strong className="text-white">Episódios:</strong> {anime.episodes || "?"}</li>
-              <li className="mb-2"><strong className="text-white">Duração:</strong> {anime.duration}</li>
+              <li className="mb-2">
+                <strong className="text-white">{type === 'manga' ? 'Capítulos:' : 'Episódios:'}</strong> {anime.chapters || anime.episodes || "?"}
+              </li>
+              {type === 'anime' && (
+                <li className="mb-2"><strong className="text-white">Duração:</strong> {anime.duration}</li>
+              )}
               <li className="mb-2"><strong className="text-white">Estado:</strong> {anime.status}</li>
-              <li><strong className="text-white">Estúdio:</strong> {anime.studios?.[0]?.name || "N/A"}</li>
+              <li><strong className="text-white">Estúdio/Autor:</strong> {anime.studios?.[0]?.name || anime.authors?.[0]?.name || "N/A"}</li>
             </ul>
           </div>
         </div>
@@ -301,7 +318,7 @@ function Detalhes() {
           )}
 
           {/* TRAILER */}
-          {anime.trailer.embed_url && (
+          {anime.trailer?.embed_url && (
             <div className="mb-5">
               <h4 className="mb-4 text-white">Trailer</h4>
               <div className="ratio ratio-16x9 rounded overflow-hidden" style={{ border: '1px solid var(--border-color)' }}>

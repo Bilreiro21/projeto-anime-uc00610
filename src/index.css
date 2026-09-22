@@ -1,16 +1,17 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Marck+Script&display=swap");
 
 :root {
-  --bg-color: #09090b; /* Zinc 950 */
-  --bg-panel: #18181b; /* Zinc 900 */
-  --bg-panel-hover: #27272a; /* Zinc 800 */
-  --accent-color: #6366f1; /* Indigo 500 */
-  --accent-hover: #818cf8; /* Indigo 400 */
+  --bg-color: #000000; /* Deep black like Sorai */
+  --bg-panel: #0a0a0a; /* Surface */
+  --bg-panel-hover: #171717;
+  --accent-color: #9333ea; /* Purple 600 */
+  --accent-hover: #a855f7; /* Purple 500 */
   --text-main: #fafafa;
   --text-muted: #a1a1aa;
   --border-color: rgba(255, 255, 255, 0.08);
-  --glass-bg: rgba(24, 24, 27, 0.7);
-  --bento-radius: 24px;
+  --glass-bg: rgba(0, 0, 0, 0.5);
+  --bento-radius: 20px;
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 body {
@@ -19,6 +20,10 @@ body {
   color: var(--text-main);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+.bg-sorai-gradient {
+  background: linear-gradient(135deg, #7e22ce 0%, #4c1d95 100%);
 }
 
 /* Utilitários de Texto */
@@ -52,15 +57,10 @@ a:hover {
    2. NAVBAR & LINKS (Glassmorphism)
    ========================================= */
 .navbar {
-  background: var(--glass-bg) !important;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-color);
-  border-radius: 999px;
-  padding: 10px 20px;
-  margin: 20px auto;
-  max-width: 1200px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  background: var(--bg-color) !important;
+  border-bottom: 1px solid var(--border-color);
+  padding: 15px 20px;
+  width: 100%;
 }
 
 .navbar-brand {

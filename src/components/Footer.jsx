@@ -3,56 +3,74 @@ import { Link } from 'react-router-dom';
 
 function Footer() {
   return (
-    <footer className="mt-5 pt-5 pb-4" style={{ backgroundColor: '#0a0a0c', borderTop: '1px solid var(--border-color)' }}>
-      <div className="container">
-        <div className="row mb-4">
-          <div className="col-md-4 mb-4 mb-md-0">
-            <h4 className="fw-bold mb-3 d-flex align-items-center gap-2 text-white">
-              <span style={{ color: 'var(--accent-color)' }}>▶</span> AniVerse
-            </h4>
-            <p className="text-muted small" style={{ lineHeight: '1.8' }}>
-              O teu portal definitivo para explorar, descobrir e organizar as tuas séries de anime e manga favoritas. Acompanha os lançamentos da temporada e cria a tua lista perfeita.
+    <footer style={{ backgroundColor: 'var(--bg-panel)' }} className="text-muted border-top border-secondary">
+      <div className="container py-5">
+        <div className="row g-5">
+          <div className="col-12 col-md-4">
+            <Link to="/" className="text-white text-decoration-none d-inline-block mb-3">
+              <span style={{ fontFamily: 'var(--font-marck-script), cursive', fontSize: '2rem' }}>Sorai</span>
+            </Link>
+            <p className="small text-muted mb-4" style={{ maxWidth: '260px' }}>
+              Your personal space to track, organize, and discover anime. Keep control of everything you watch.
             </p>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="d-inline-flex align-items-center justify-content-center text-muted transition-colors rounded" style={{ width: '32px', height: '32px', backgroundColor: 'rgba(255,255,255,0.05)' }}>
+              <i className="bi bi-github"></i>
+            </a>
           </div>
-          <div className="col-md-2 col-6 mb-4 mb-md-0">
-            <h6 className="text-white fw-bold mb-3">Navegação</h6>
-            <ul className="list-unstyled small">
-              <li className="mb-2"><Link to="/" className="text-muted text-decoration-none hover-accent">Home</Link></li>
-              <li className="mb-2"><Link to="/animes" className="text-muted text-decoration-none hover-accent">Animes</Link></li>
-              <li className="mb-2"><Link to="/mangas" className="text-muted text-decoration-none hover-accent">Mangas</Link></li>
-              <li className="mb-2"><Link to="/favoritos" className="text-muted text-decoration-none hover-accent">Minha Lista</Link></li>
+
+          <div className="col-6 col-md-2">
+            <h6 className="text-uppercase fw-bold text-white mb-4" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Browse</h6>
+            <ul className="list-unstyled space-y-2 mb-0 small">
+              <li className="mb-2"><Link to="/" className="text-muted text-decoration-none transition-colors hover:text-white">Home</Link></li>
+              <li className="mb-2"><Link to="/animes" className="text-muted text-decoration-none transition-colors hover:text-white">Most Popular</Link></li>
+              <li className="mb-2"><Link to="/temporadas" className="text-muted text-decoration-none transition-colors hover:text-white">Seasonal Anime</Link></li>
+              <li className="mb-2"><Link to="/mangas" className="text-muted text-decoration-none transition-colors hover:text-white">Mangas</Link></li>
             </ul>
           </div>
-          <div className="col-md-2 col-6 mb-4 mb-md-0">
-            <h6 className="text-white fw-bold mb-3">Legal</h6>
-            <ul className="list-unstyled small">
-              <li className="mb-2"><a href="#" className="text-muted text-decoration-none hover-accent">Termos de Serviço</a></li>
-              <li className="mb-2"><a href="#" className="text-muted text-decoration-none hover-accent">Privacidade</a></li>
-              <li className="mb-2"><a href="#" className="text-muted text-decoration-none hover-accent">Contactos</a></li>
-              <li className="mb-2"><a href="#" className="text-muted text-decoration-none hover-accent">DMCA</a></li>
+
+          <div className="col-6 col-md-2">
+            <h6 className="text-uppercase fw-bold text-white mb-4" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Genres</h6>
+            <ul className="list-unstyled space-y-2 mb-0 small">
+              <li className="mb-2"><Link to="/animes?genre=1" className="text-muted text-decoration-none transition-colors hover:text-white">Action</Link></li>
+              <li className="mb-2"><Link to="/animes?genre=22" className="text-muted text-decoration-none transition-colors hover:text-white">Romance</Link></li>
+              <li className="mb-2"><Link to="/animes?genre=27" className="text-muted text-decoration-none transition-colors hover:text-white">Shounen</Link></li>
+              <li className="mb-2"><Link to="/animes?genre=24" className="text-muted text-decoration-none transition-colors hover:text-white">Sci-Fi</Link></li>
+              <li className="mb-2"><Link to="/animes?genre=10" className="text-muted text-decoration-none transition-colors hover:text-white">Fantasy</Link></li>
             </ul>
           </div>
-          <div className="col-md-4">
-            <h6 className="text-white fw-bold mb-3">Redes Sociais</h6>
-            <div className="d-flex gap-3">
-              <a href="#" className="text-muted fs-5 hover-accent"><i className="bi bi-discord"></i></a>
-              <a href="#" className="text-muted fs-5 hover-accent"><i className="bi bi-twitter-x"></i></a>
-              <a href="#" className="text-muted fs-5 hover-accent"><i className="bi bi-instagram"></i></a>
-              <a href="#" className="text-muted fs-5 hover-accent"><i className="bi bi-github"></i></a>
-            </div>
+
+          <div className="col-6 col-md-2">
+            <h6 className="text-uppercase fw-bold text-white mb-4" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Season 2026</h6>
+            <ul className="list-unstyled space-y-2 mb-0 small">
+              <li className="mb-2"><Link to="/temporadas?season=winter" className="text-muted text-decoration-none transition-colors hover:text-white">Winter</Link></li>
+              <li className="mb-2"><Link to="/temporadas?season=spring" className="text-muted text-decoration-none transition-colors hover:text-white">Spring</Link></li>
+              <li className="mb-2"><Link to="/temporadas?season=summer" className="text-muted text-decoration-none transition-colors hover:text-white">Summer</Link></li>
+              <li className="mb-2"><Link to="/temporadas?season=fall" className="text-muted text-decoration-none transition-colors hover:text-white">Fall</Link></li>
+            </ul>
           </div>
-        </div>
-        <div className="row border-top pt-4 mt-4" style={{ borderColor: 'var(--border-color) !important' }}>
-          <div className="col-12 text-center">
-            <p className="text-muted small mb-0">
-              &copy; {new Date().getFullYear()} AniVerse. Desenvolvido por Diogo Bilreiro para a UC00610.
-            </p>
+
+          <div className="col-6 col-md-2">
+            <h6 className="text-uppercase fw-bold text-white mb-4" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Formats</h6>
+            <ul className="list-unstyled space-y-2 mb-0 small">
+              <li className="mb-2"><Link to="/animes?type=tv" className="text-muted text-decoration-none transition-colors hover:text-white">TV</Link></li>
+              <li className="mb-2"><Link to="/animes?type=ova" className="text-muted text-decoration-none transition-colors hover:text-white">OVAs</Link></li>
+              <li className="mb-2"><Link to="/animes?type=special" className="text-muted text-decoration-none transition-colors hover:text-white">Specials</Link></li>
+              <li className="mb-2"><Link to="/animes?type=movie" className="text-muted text-decoration-none transition-colors hover:text-white">Movies</Link></li>
+            </ul>
           </div>
         </div>
       </div>
-      <style>{`
-        .hover-accent:hover { color: var(--accent-color) !important; }
-      `}</style>
+      
+      <div className="border-top" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+        <div className="container py-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small" style={{ fontSize: '0.75rem' }}>
+          <span>Powered by <a href="https://jikan.moe" target="_blank" rel="noopener noreferrer" className="text-muted text-decoration-underline">Jikan API</a></span>
+          <span>© 2026 Sorai. All rights reserved.</span>
+          <div className="d-flex gap-3">
+            <a href="#" className="text-muted text-decoration-underline">Privacy Policy</a>
+            <a href="#" className="text-muted text-decoration-underline">Terms of Use</a>
+          </div>
+        </div>
+      </div>
     </footer>
   );
 }

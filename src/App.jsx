@@ -9,33 +9,40 @@ import Favoritos from './pages/Favoritos'
 import Animes from './pages/Animes'
 import Mangas from './pages/Mangas'
 import Temporadas from './pages/Temporadas'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import { AuthProvider } from './context/AuthContext'
 
 function App() {
   return (
-    <div className="d-flex flex-column min-vh-100">
-      <Toaster 
-        position="bottom-right" 
-        toastOptions={{
-          style: {
-            background: '#1f1f24',
-            color: '#fff',
-            border: '1px solid rgba(255,255,255,0.1)',
-          },
-        }} 
-      />
-      <Navbar />
-      <div className="flex-grow-1">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/animes" element={<Animes />} />
-          <Route path="/mangas" element={<Mangas />} />
-          <Route path="/temporadas" element={<Temporadas />} />
-          <Route path="/favoritos" element={<Favoritos />} />
-          <Route path="/detalhes/:type/:id" element={<Detalhes />} />
-        </Routes>
+    <AuthProvider>
+      <div className="d-flex flex-column min-vh-100">
+        <Toaster 
+          position="bottom-right" 
+          toastOptions={{
+            style: {
+              background: '#1f1f24',
+              color: '#fff',
+              border: '1px solid rgba(255,255,255,0.1)',
+            },
+          }} 
+        />
+        <Navbar />
+        <div className="flex-grow-1">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/animes" element={<Animes />} />
+            <Route path="/mangas" element={<Mangas />} />
+            <Route path="/temporadas" element={<Temporadas />} />
+            <Route path="/favoritos" element={<Favoritos />} />
+            <Route path="/detalhes/:type/:id" element={<Detalhes />} />
+          </Routes>
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </AuthProvider>
   )
 }
 

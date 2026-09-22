@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 
 function Favoritos() {
+  const { user } = useAuth();
   const [lista, setLista] = useState([]);
   const [filtro, setFiltro] = useState('todos'); // 'todos', 'watching', 'completed', 'plan_to_watch', 'dropped'
 
   useEffect(() => {
-    const salvos = JSON.parse(localStorage.getItem('meus-favoritos')) || [];
+    if (!user) return;
+    const storageKey = `sorai-lista-${user.id}`;
+    const salvos = JSON.parse(localStorage.getItem(storageKey)) || [];
     
     // Migração de favoritos antigos para o novo formato de "Anime List"
     const listAtualizada = salvos.map(item => {
@@ -19,15 +23,15 @@ function Favoritos() {
 
     setLista(listAtualizada);
     if (JSON.stringify(salvos) !== JSON.stringify(listAtualizada)) {
-      localStorage.setItem('meus-favoritos', JSON.stringify(listAtualizada));
+      localStorage.setItem(storageKey, JSON.stringify(listAtualizada));
     }
-  }, []);
+  }, [user]);
 
   const removerFavorito = (e, id) => {
     e.preventDefault(); // Impede de navegar para os detalhes
     const novaLista = lista.filter(item => item.mal_id !== id);
     setLista(novaLista);
-    localStorage.setItem('meus-favoritos', JSON.stringify(novaLista));
+    localStorage.setItem(`sorai-lista-${user.id}`, JSON.stringify(novaLista));
     toast.success('Removido da lista!', { icon: '🗑️' });
   };
 
@@ -64,6 +68,18 @@ function Favoritos() {
       <h1 className="fw-800 mb-5 text-center" style={{ fontSize: '3rem' }}>
         Minha <span style={{ color: 'var(--accent-color)' }}>Anime List</span>
       </h1>
+
+      {!user ? (
+        <div className="text-center" style={{ marginTop: '10vh' }}>
+          <h3 className="text-white mb-4">Please sign in to view your list.</h3>
+          <p className="text-muted mb-4">You need an account to save and track your favorite anime and manga.</p>
+          <div className="d-flex justify-content-center gap-3">
+            <Link to="/login" className="btn btn-primary rounded-pill px-4 py-2 fw-bold">Sign in</Link>
+            <Link to="/register" className="btn btn-outline-light rounded-pill px-4 py-2 fw-bold" style={{ borderColor: 'var(--border-color)' }}>Create free account</Link>
+          </div>
+        </div>
+      ) : (
+        <>
 
       {/* SEPARADORES / TABS (MODERN SEGMENTED CONTROL) */}
       <div className="d-flex justify-content-center mb-5">
@@ -173,6 +189,8 @@ function Favoritos() {
             );
           })}
         </div>
+      )}
+      </>
       )}
     </div>
   );

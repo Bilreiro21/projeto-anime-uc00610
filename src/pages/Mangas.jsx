@@ -14,8 +14,12 @@ function Mangas() {
   const carregarMangas = () => {
     setLoading(true); setErro(null);
     let url = `https://api.jikan.moe/v4/manga?page=${page}&order_by=${ordem}&sort=desc`
-    if (pesquisa) url += `&q=${pesquisa}`
-    else if (ordem === 'popularity') url = `https://api.jikan.moe/v4/top/manga?page=${page}`
+    if (pesquisa) {
+      url += `&q=${pesquisa}`
+    } else {
+      if (ordem === 'popularity') url = `https://api.jikan.moe/v4/top/manga?page=${page}&filter=bypopularity`
+      else if (ordem === 'score') url = `https://api.jikan.moe/v4/top/manga?page=${page}`
+    }
 
     fetch(url)
       .then(res => { if (!res.ok) throw new Error('Erro na API'); return res.json(); })
